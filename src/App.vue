@@ -9,11 +9,12 @@
 import Navbar from './components/Navbar.vue'
 import Resume from './components/Resume.vue'
 
+
 export default {
   name: 'App',
   components: {
     Navbar,
-    Resume
+    Resume,
   }
 }
 </script>
