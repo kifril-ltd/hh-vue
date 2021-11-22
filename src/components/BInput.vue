@@ -1,19 +1,25 @@
 <template>
-    <b-form-group :label="label" :label-for="id" :state="isError" aria-describedby="invalid-message">
+    <b-form-group 
+        :label="label" 
+        :label-for="id" 
+    >
+        <b-form-input
+                :id="id" 
+                :placeholder="placeholder"
+                :type="type"
+                :state="isError ? null : false"
+                aria-describedby="invalid-message"
+                :value="value"
+                @input.native="onInput($event.target.value)"
+        >
+        </b-form-input>
         <b-form-invalid-feedback id="invalid-message">
             <ul id="error-messages">
-                <!-- <li v-for="error in errors" :key="error.message">
-                    {{ error.message }}
-                </li> -->
+                <li v-for="error in errors" :key="error">
+                    {{ error }}
+                </li>
             </ul>
         </b-form-invalid-feedback>
-        <b-form-input 
-            :id="id" 
-            :placeholder="placeholder" 
-            :value="value" 
-            @input="onInput"
-           >
-        </b-form-input>
     </b-form-group>
 </template>
 
@@ -34,6 +40,11 @@
                 require: false,
                 default: ''
             },
+            type: {
+                type: String,
+                require: false,
+                default: 'text'
+            },
             value: {
                 type: String,
                 require: true,
@@ -52,23 +63,26 @@
         },
 
         methods: {
-            onInput(event) {
+            onInput(value) {
+                
+                if (this.rules) {
+                    this.validate(value);
+                }
+                
+                this.$emit('input', value);
+            },
+
+            validate(value) {
                 this.errors = [];
+                this.isError = true;
 
-                // for (const rule in this.rules) {
-                //     if (!rule.regex.test(inputValue)) {
-                //         this.errors.push(rule.message)
-                //     }
-                // }
-
-
-                this.$emit('input', event.target.value);
-            },
-
-            onChange(event) {
-                this.$emit('change', event.target.value);
-            },
-
+                for (const rule of this.rules) {
+                    if (value && !rule.regex.test(value)) {
+                        this.errors.push(rule.message)
+                        this.isError = false;
+                    }
+                }
+            }
         },
     }
 </script>

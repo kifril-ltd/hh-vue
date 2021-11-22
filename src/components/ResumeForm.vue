@@ -2,6 +2,7 @@
  
    
           <b-card border-variant="danger">
+             
             <b-form>
               <b-card header="Основная информация" class="mb-2">
                
@@ -9,66 +10,113 @@
                   id="fio-input"
                   label="ФИО"
                   placeholder="Введите свое ФИО"
-                  :value="resume.fio"
-                  @input="this.resume.fio = $event"
-                  
+                  v-model="resume.fio"                 
                 />
 
-                <b-form-group id='city' label="Город:" label-for="city-input">
-                  <b-form-input id="city-input" v-model="resume.city" placeholder="Город" required>
-                  </b-form-input>
-                </b-form-group>
+                <BInput 
+                  id="city-input"
+                  label="Город"
+                  placeholder="Введите город проживания"
+                  v-model="resume.city"                 
+                />
 
-                <b-form-group id='birthday' label="Дата рождения:" label-for="birthday-input">
-                  <b-form-input id="birthday-input" v-model="resume.birthday" placeholder="Дата рождения" type="date"
-                    required>
-                  </b-form-input>
-                </b-form-group>
+                <BInput 
+                  id="birthday-input"
+                  label="Дата рождения"
+                  placeholder="Дата рождения"
+                  type="date"
+                  v-model="resume.birthday"             
+                />
 
-                <b-form-group id='photo' label="Ссылка на фото:" label-for="photo-input">
-                  <b-form-input id="photo-input" v-model="resume.photo" placeholder="Ссылка на фото" type="url"
-                    required>
-                  </b-form-input>
-                </b-form-group>
+                <BInput 
+                  id="photo-input"
+                  label="Ссылка на фото"
+                  placeholder="Введите ссылку на фото"
+                  v-model="resume.photo"                 
+                />
+
               </b-card>
 
               <b-card header="Контакты" class="mb-2">
-                <!-- <BInput
+                <BInput
                   id="phone-input"
                   label="Телефон"
                   placeholder="Введите свой номер телефона"
-                
-                /> -->
+                  v-model="resume.phone"
+                  :rules="phoneRules"
+                />
               
-
-
-                <b-form-group id='email' label="Email:" label-for="email-input">
-                  <b-form-input id="email-input" v-model="resume.email" placeholder="Email" type="email" required>
-                  </b-form-input>
-                </b-form-group>
+                <BInput 
+                  id="email-input"
+                  label="Email"
+                  placeholder="Введите email"
+                  v-model="resume.email"                 
+                />
               </b-card>
+              
               <b-card header="Образование" class="mb-2">
-                <b-form-group id='education' label="Образование:" label-for="education-input">
-                  <b-form-select v-model="resume.education.level" :options="educationLevelOptions"></b-form-select>
-      
-                </b-form-group>
+               
+                   <BSelect
+                    id="education-level-select"
+                    label="Уровень образования"
+                    v-model="resume.education.level"
+                    :options="educationLevelOptions"
+                   />
 
-                <b-form-group id='profession' label="Профессия:" label-for="profession-input">
-                  <b-form-input id="profession-input" v-model="resume.profession" placeholder="Профессия" required>
-                  </b-form-input>
-                </b-form-group>
+                   <template v-if="educationLevelCheck">
+                    <BInput 
+                     id="university-input"
+                     label="Учебное заведение"
+                     placeholder="Учебное заведение"
+                     v-model="resume.education.university"                 
+                     />
+
+                     <BInput 
+                     id="faculty-input"
+                     label="Факультет"
+                     placeholder="Факультет"
+                     v-model="resume.education.faculty"                 
+                     />
+
+                     <BInput 
+                     id="specialization-input"
+                     label="Специализация"
+                     placeholder="Специализация"
+                     v-model="resume.education.specialization"                 
+                     />
+
+                     <BInput 
+                     id="grad-year-input"
+                     label="Год окончания"
+                     placeholder="Год окончания"
+                     v-model="resume.education.gradyear"                 
+                     />
+                   </template>
+               
+
+
+                <BInput 
+                  id="profession-input"
+                  label="Профессия"
+                  placeholder="Введите свою профессию"
+                  v-model="resume.profession"                 
+                />
+
               </b-card>
               <b-card header="Работа">
-                <b-form-group id='salary' label="Желаемая зарплата:" label-for="salary-input">
-                  <b-form-input id="salary-input" v-model="resume.salary" placeholder="Желаемая зарплата" type="number"
-                    required>
-                  </b-form-input>
-                </b-form-group>
+                <BInput 
+                  id="salary-input"
+                  label="Желаемая зарплата"
+                  placeholder="Желаемая зарплата"
+                  v-model="resume.salary"                 
+                />
 
-                <b-form-group id='skills' label="Ключевые навыки:" label-for="skills-input">
-                  <b-form-input id="skills-input" v-model="resume.skills" placeholder="Ключевые навыки" required>
-                  </b-form-input>
-                </b-form-group>
+                <BInput 
+                  id="skills-input"
+                  label="Ключевые навыки"
+                  placeholder="Ключевые навыки"
+                  v-model="resume.skills"                 
+                />
 
                 <b-form-group id='description' label="O себе:" label-for="description-input">
                   <b-form-textarea id="description-input" v-model="resume.description" placeholder="О себе..." rows="3"
@@ -82,10 +130,12 @@
 
 <script>
   import BInput from './BInput.vue'
+  import BSelect from './BSelect.vue'
   export default {
     name: 'ResumeForm',
     components: {
-      BInput
+      BInput,
+      BSelect
     },
     data() {
       return {
@@ -93,12 +143,12 @@
           profession: '',
           city: '',
           photo: undefined,
-          fio: '123',
+          fio: '',
           phone: '',
           email: '',
           birthday: '',
           education: {
-            level: '', 
+            level: null, 
             university: '',
             faculty: '',
             specialization: '',
@@ -110,8 +160,8 @@
         },
 
         phoneRules: [
-            {rule: /^\d$/i, message: 'Телефон должен состоять только из цифр'},
-            {rule: /^.{6,10}$/i, message: 'Телефон должен содержать от 6 до 10 символов'}
+            {regex: /^\d*$/i, message: 'Телефон должен состоять только из цифр'},
+            {regex: /^.{6,10}$/i, message: 'Телефон должен содержать от 6 до 10 символов'}
         ],
         educationLevelOptions: [
           { value: null, text: 'Выберете уровень образования' },
@@ -123,14 +173,13 @@
       }
     },
     computed: {
+      educationLevelCheck() {
+        return ['Среднее специальное', 'Неоконченное высшее', 'Высшее'].includes(this.resume.education.level);
+      },
+
       avatar() {
         return this.imageError ? this.defaultAvatar : this.resume.photo;
       },
-
-      phoneCheck() {
-        const regex = /^\d{6,10}$/i;
-        return regex.test(this.resume.phone)
-      }
     }
   }
 </script>
